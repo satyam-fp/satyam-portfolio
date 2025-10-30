@@ -1,238 +1,265 @@
 # Neural Space Portfolio - Backend API
 
-FastAPI backend for the Neural Space Portfolio website, providing RESTful endpoints for managing projects and blog posts with 3D positioning data.
-
-## Features
-
-- **FastAPI Framework**: High-performance Python web framework with automatic OpenAPI documentation
-- **SQLAlchemy ORM**: Database abstraction layer with SQLite for simplicity
-- **Pydantic Validation**: Request/response validation and serialization
-- **Alembic Migrations**: Database schema versioning and migration management
-- **CORS Support**: Cross-origin resource sharing for frontend integration
-- **3D Positioning**: Store and manage 3D coordinates for neural network visualization
+A well-structured FastAPI backend for the Neural Space Portfolio application.
 
 ## Project Structure
 
 ```
 backend/
-├── alembic/                 # Database migration files
-│   ├── versions/           # Migration scripts
-│   ├── env.py             # Alembic environment configuration
-│   └── script.py.mako     # Migration template
-├── alembic.ini             # Alembic configuration
-├── database.py             # Database connection and utilities
-├── init_db.py             # Database initialization script
-├── main.py                # FastAPI application entry point
-├── models.py              # SQLAlchemy database models
-├── requirements.txt       # Python dependencies
-├── run_dev.py            # Development server runner
-├── schemas.py            # Pydantic request/response schemas
-└── test_setup.py         # Setup validation tests
+├── app/
+│   ├── api/                    # API routes
+│   │   ├── routes/            # Individual route modules
+│   │   │   ├── projects.py    # Public project endpoints
+│   │   │   ├── blogs.py       # Public blog endpoints
+│   │   │   ├── neural_data.py # Combined 3D data endpoint
+│   │   │   ├── admin_auth.py  # Admin authentication
+│   │   │   ├── admin_projects.py  # Admin project management
+│   │   │   ├── admin_blogs.py     # Admin blog management
+│   │   │   ├── admin_pages.py     # Admin static pages
+│   │   │   └── admin_stats.py     # Admin dashboard stats
+│   │   ├── dependencies.py    # Shared dependencies (auth, etc.)
+│   │   └── __init__.py        # API router aggregation
+│   ├── core/                  # Core configuration
+│   │   ├── config.py          # Application settings
+│   │   ├── database.py        # Database setup
+│   │   └── security.py        # Authentication utilities
+│   ├── models/                # SQLAlchemy models
+│   │   ├── project.py
+│   │   ├── blog.py
+│   │   ├── admin.py
+│   │   └── static_page.py
+│   ├── schemas/               # Pydantic schemas
+│   │   ├── project.py
+│   │   ├── blog.py
+│   │   ├── auth.py
+│   │   ├── static_page.py
+│   │   └── dashboard.py
+│   └── main.py                # FastAPI application
+├── scripts/                   # Utility scripts
+│   ├── init_db.py            # Initialize database
+│   ├── init_admin.py         # Create admin user
+│   └── seed_database.py      # Seed sample data
+├── tests/                     # Test suite
+│   └── test_api.py           # Comprehensive API tests
+├── run.py                     # Development server runner
+├── requirements.txt           # Python dependencies
+└── .env                       # Environment variables
 ```
 
-## Quick Start
+## Setup
 
-### 1. Install Dependencies
+### 1. Create Virtual Environment
 
 ```bash
 cd backend
-pip install -r requirements.txt
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### 2. Initialize Database
+### 2. Install Dependencies
 
 ```bash
-python init_db.py
+venv/bin/pip install -r requirements.txt
 ```
 
-### 3. Run Development Server
+### 3. Initialize Database
 
 ```bash
-python run_dev.py
+# Create tables
+venv/bin/python scripts/init_db.py
+
+# Or reset and recreate
+venv/bin/python scripts/init_db.py --reset
+```
+
+### 4. Create Admin User
+
+```bash
+# Default credentials (admin/admin123)
+venv/bin/python scripts/init_admin.py
+
+# Custom credentials
+venv/bin/python scripts/init_admin.py --username myuser --password mypass --email user@example.com
+```
+
+### 5. Seed Sample Data (Optional)
+
+```bash
+venv/bin/python scripts/seed_database.py
+```
+
+## Running the Server
+
+### Development Mode
+
+```bash
+# Using run.py
+venv/bin/python run.py
+
+# Or directly with uvicorn
+venv/bin/uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The API will be available at:
-- **API Base**: http://localhost:8000
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-## Database Models
-
-### Project Model
-- `id`: Primary key
-- `title`: Project title
-- `slug`: URL-friendly identifier (unique)
-- `description`: Project description
-- `tech_stack`: JSON array of technologies used
-- `github_url`: GitHub repository URL (optional)
-- `live_demo`: Live demo URL (optional)
-- `image_url`: Project image URL (optional)
-- `position_x`, `position_y`, `position_z`: 3D coordinates for neural network
-- `created_at`: Timestamp
-
-### Blog Model
-- `id`: Primary key
-- `title`: Blog post title
-- `slug`: URL-friendly identifier (unique)
-- `content`: Markdown content
-- `summary`: Optional summary text
-- `position_x`, `position_y`, `position_z`: 3D coordinates for neural network
-- `created_at`: Timestamp
-
-## API Endpoints
-
-### Health Check
-- `GET /`: API information
-- `GET /health`: Health status with database connection check
-
-### Future Endpoints (Task 3)
-- `GET /api/projects`: List all projects
-- `GET /api/projects/{slug}`: Get project by slug
-- `GET /api/blogs`: List all blog posts
-- `GET /api/blogs/{slug}`: Get blog post by slug
-- `GET /api/neural-data`: Combined data for 3D visualization
-
-## Database Management
-
-### Initialize Database
-```bash
-python init_db.py
-```
-
-### Reset Database (drops all tables)
-```bash
-python init_db.py --reset
-```
-
-### Seed Database with Sample Data
-```bash
-python seed_database.py
-```
-
-### Database Utilities
-```bash
-# Show database statistics
-python db_utils.py stats
-
-# Reset database (drop and recreate tables)
-python db_utils.py reset
-
-# Seed with sample data
-python db_utils.py seed
-
-# Clear all data
-python db_utils.py clear
-```
-
-### Create Migration
-```bash
-python -m alembic revision --autogenerate -m "Description of changes"
-```
-
-### Apply Migrations
-```bash
-python -m alembic upgrade head
-```
-
-### Migration History
-```bash
-python -m alembic history
-```
+- API: http://localhost:8000
+- Docs: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
 ## Testing
 
-Run the setup validation tests:
+### Run All Tests
+
 ```bash
-python test_setup.py
+# Run tests
+venv/bin/python tests/test_api.py
+
+# Setup test data and run tests
+venv/bin/python tests/test_api.py --setup
 ```
 
-This will verify:
-- Database connection
-- SQLAlchemy models
-- Pydantic schemas
-- FastAPI app initialization
+### Manual Testing
+
+Use the interactive API docs at http://localhost:8000/docs to test endpoints manually.
+
+## API Endpoints
+
+### Public Endpoints
+
+- `GET /` - Root endpoint
+- `GET /health` - Health check
+- `GET /api/projects` - List all projects
+- `GET /api/projects/{slug}` - Get project by slug
+- `GET /api/blogs` - List all blogs
+- `GET /api/blogs/{slug}` - Get blog by slug
+- `GET /api/neural-data` - Get combined data for 3D scene
+
+### Admin Endpoints (Require Authentication)
+
+#### Authentication
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/logout` - Admin logout
+- `GET /api/admin/verify` - Verify session
+
+#### Projects
+- `GET /api/admin/projects` - List all projects (admin view)
+- `POST /api/admin/projects` - Create project
+- `PUT /api/admin/projects/{id}` - Update project
+- `DELETE /api/admin/projects/{id}` - Delete project
+
+#### Blogs
+- `GET /api/admin/blogs` - List all blogs (admin view)
+- `POST /api/admin/blogs` - Create blog
+- `PUT /api/admin/blogs/{id}` - Update blog
+- `DELETE /api/admin/blogs/{id}` - Delete blog
+
+#### Static Pages
+- `GET /api/admin/pages` - List all pages
+- `GET /api/admin/pages/{key}` - Get page by key
+- `PUT /api/admin/pages/{key}` - Update page
+
+#### Dashboard
+- `GET /api/admin/stats` - Get dashboard statistics
 
 ## Environment Variables
 
 Create a `.env` file in the backend directory:
 
 ```env
-# Database
 DATABASE_URL=sqlite:///./neural_space.db
-
-# Server Configuration
-HOST=0.0.0.0
-PORT=8000
-
-# CORS (comma-separated list for production)
-ALLOWED_ORIGINS=http://localhost:3000,https://yourdomain.com
+ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+SECRET_KEY=your-secret-key-change-in-production
+LOG_LEVEL=INFO
 ```
 
-## Development Notes
+## Database Migrations
 
-### Tech Stack Handling
-- Tech stacks are stored as JSON strings in the database
-- Pydantic schemas automatically convert between JSON strings and Python lists
-- Use `get_tech_stack_list()` and `set_tech_stack_list()` methods on Project model
+The project uses Alembic for database migrations:
 
-### 3D Positioning
-- All content items (projects and blogs) have 3D coordinates
-- Coordinates are used by the frontend for neural network visualization
-- Position values should be within reasonable bounds for the 3D scene
+```bash
+# Create a new migration
+venv/bin/python -m alembic revision --autogenerate -m "description"
 
-### Database Migrations
-- Always create migrations for schema changes using Alembic
-- Test migrations on a copy of production data before applying
-- Keep migration messages descriptive and clear
+# Apply migrations
+venv/bin/python -m alembic upgrade head
+
+# Rollback migration
+venv/bin/python -m alembic downgrade -1
+```
+
+## Development Tips
+
+### Code Organization
+
+- **Models**: Database models with SQLAlchemy ORM
+- **Schemas**: Pydantic models for request/response validation
+- **Routes**: API endpoints organized by resource
+- **Dependencies**: Shared logic like authentication
+- **Core**: Configuration and utilities
+
+### Adding New Endpoints
+
+1. Create schema in `app/schemas/`
+2. Create model in `app/models/` (if needed)
+3. Create route in `app/api/routes/`
+4. Register route in `app/api/__init__.py`
+
+### Authentication
+
+Admin endpoints use cookie-based session authentication. The `get_current_admin` dependency handles authentication and returns the authenticated user.
+
+## Troubleshooting
+
+### Database Issues
+
+```bash
+# Reset database
+venv/bin/python scripts/init_db.py --reset
+
+# Check database connection
+venv/bin/python -c "from app.core.database import check_database_connection; print(check_database_connection())"
+```
+
+### Import Errors
+
+Make sure you're using the virtual environment:
+```bash
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+### Port Already in Use
+
+Change the port in `run.py` or use:
+```bash
+venv/bin/uvicorn app.main:app --reload --port 8001
+```
 
 ## Production Deployment
 
-### Environment Setup
-1. Set `DATABASE_URL` to production database
-2. Configure `ALLOWED_ORIGINS` for your frontend domain
-3. Set appropriate `HOST` and `PORT` values
-4. Use a production WSGI server like Gunicorn
+1. Set `SECRET_KEY` to a secure random value
+2. Use PostgreSQL instead of SQLite
+3. Set `secure=True` for cookies (requires HTTPS)
+4. Configure proper CORS origins
+5. Use a production ASGI server (Gunicorn + Uvicorn)
 
-### Example Production Command
 ```bash
-gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+venv/bin/gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker
 ```
 
-## Sample Data
 
-The backend includes comprehensive sample data for development and testing:
 
-### Projects (6 samples)
-- Neural Mesh Reconstruction
-- Real-time Style Transfer for 3D Scenes  
-- Volumetric Human Pose Estimation
-- NeRF Scene Optimization
-- 3D Object Detection Pipeline
-- Generative 3D Asset Creation
+cd backend
 
-### Blog Posts (4 samples)
-- Getting Started with Neural Radiance Fields
-- Optimizing 3D Deep Learning Pipelines
-- Building Production-Ready 3D ML Systems
-- The Future of 3D AI: Trends and Predictions
+# Initialize database
+venv/bin/python scripts/init_db.py --reset
 
-All sample data includes:
-- Realistic ML/3D AI content and descriptions
-- Proper tech stacks and project links
-- 3D positioning for neural network visualization
-- Full Markdown content for blog posts
+# Create admin user (username: admin, password: admin123)
+venv/bin/python scripts/init_admin.py
 
-## Requirements Satisfied
+# Seed sample data
+venv/bin/python scripts/seed_database.py
 
-This implementation satisfies the following requirements from the specification:
+# Run tests
+venv/bin/python tests/test_api.py
 
-- **Requirement 2.1**: Sample project data with realistic ML/3D AI content and tech stacks
-- **Requirement 3.1**: Sample blog posts in Markdown format with technical content
-- **Requirement 5.4**: SQLAlchemy models with 3D positioning for Project and Blog entities
-- **Requirement 5.5**: Pydantic schemas for request/response validation
-- **Requirement 6.3**: Clean setup instructions and modular code structure
-- **Requirement 6.4**: Database migration utilities and development tools
-
-## Next Steps
-
-The next task will implement the actual API endpoints that use these models and schemas to provide data to the frontend application.
+# Start server
+venv/bin/python run.py

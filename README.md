@@ -4,10 +4,12 @@ An interactive 3D portfolio website for a Machine Learning Engineer, featuring a
 
 ## 🚀 Features
 
-- **Interactive 3D Neural Network**: Explore projects and blogs as nodes in a 3D space
+- **Interactive 3D Neural Network**: Explore projects and blogs as nodes in a 3D space using React Three Fiber
+- **Admin Panel**: Full-featured content management system for projects, blogs, and static pages
 - **Modern Tech Stack**: Next.js 15, React Three Fiber, FastAPI, SQLAlchemy
 - **Responsive Design**: Works on desktop and mobile with 2D fallbacks
 - **Clean Architecture**: Decoupled frontend and backend with RESTful APIs
+- **Authentication**: Secure cookie-based admin authentication
 
 ## 📋 Prerequisites
 
@@ -44,20 +46,34 @@ This will start:
 
 ```
 neural-space-portfolio/
-├── frontend/                 # Next.js frontend
+├── frontend/                    # Next.js frontend
 │   ├── src/
-│   │   ├── app/             # App Router pages
-│   │   ├── components/      # React components
-│   │   └── lib/            # Utilities
-│   ├── public/             # Static assets
+│   │   ├── app/                # App Router pages
+│   │   │   ├── page.tsx        # Home with 3D scene
+│   │   │   ├── about/          # About page
+│   │   │   ├── blog/           # Blog listing & detail
+│   │   │   ├── projects/       # Projects listing & detail
+│   │   │   └── admin/          # Admin panel pages
+│   │   ├── components/
+│   │   │   ├── 3d/            # 3D visualization components
+│   │   │   ├── ui/            # Reusable UI components
+│   │   │   └── navigation.tsx # Navigation component
+│   │   ├── lib/               # API client & utilities
+│   │   └── types/             # TypeScript types
 │   └── package.json
-├── backend/                 # FastAPI backend
-│   ├── main.py             # FastAPI app
-│   ├── models.py           # SQLAlchemy models
-│   ├── schemas.py          # Pydantic schemas
-│   ├── database.py         # Database configuration
+├── backend/                    # FastAPI backend
+│   ├── app/
+│   │   ├── api/               # API routes
+│   │   │   └── routes/        # Endpoint handlers
+│   │   ├── core/              # Core configuration
+│   │   ├── models/            # SQLAlchemy models
+│   │   └── schemas/           # Pydantic schemas
+│   ├── scripts/               # Database utilities
+│   ├── alembic/               # Database migrations
+│   ├── run.py                 # Dev server entry point
 │   └── requirements.txt
-└── package.json            # Root package.json
+├── test-integration.sh         # Integration test suite
+└── package.json               # Root package.json
 ```
 
 ## 🔧 Development
@@ -73,8 +89,13 @@ npm run lint         # Run ESLint
 ### Backend Development
 ```bash
 cd backend
-python run_dev.py    # Start dev server with auto-reload
-pip install -r requirements.txt  # Install dependencies
+venv/bin/python run.py              # Start dev server with auto-reload
+venv/bin/pip install -r requirements.txt  # Install dependencies
+
+# Database management
+venv/bin/python scripts/init_db.py         # Initialize database
+venv/bin/python scripts/init_admin.py      # Create admin user
+venv/bin/python scripts/seed_database.py   # Seed sample data
 ```
 
 ### Running Both Servers
@@ -84,11 +105,21 @@ npm run dev          # Runs both frontend and backend concurrently
 
 ## 🌐 API Endpoints
 
-- `GET /` - API root
-- `GET /health` - Health check
-- `GET /api/projects` - List all projects (coming soon)
-- `GET /api/blogs` - List all blogs (coming soon)
-- `GET /api/neural-data` - Combined data for 3D scene (coming soon)
+### Public Endpoints
+- `GET /api/projects` - List all projects
+- `GET /api/projects/{slug}` - Get project by slug
+- `GET /api/blogs` - List all published blogs
+- `GET /api/blogs/{slug}` - Get blog by slug
+- `GET /api/neural-data` - Combined data for 3D scene
+
+### Admin Endpoints (Authentication Required)
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/logout` - Admin logout
+- `GET /api/admin/verify` - Verify authentication
+- `GET /api/admin/stats` - Dashboard statistics
+- `GET /api/admin/projects` - Manage projects (CRUD)
+- `GET /api/admin/blogs` - Manage blogs (CRUD)
+- `GET /api/admin/pages` - Manage static pages (CRUD)
 
 ## 🚀 Deployment
 
@@ -104,15 +135,17 @@ The backend includes configuration for cloud deployment with environment variabl
 
 ## 🧪 Testing
 
+Run the integration test suite:
 ```bash
-# Frontend tests
-cd frontend
-npm test
-
-# Backend tests (to be implemented)
-cd backend
-pytest
+./test-integration.sh
 ```
+
+This tests:
+- Backend API endpoints
+- Frontend page rendering
+- Dynamic routes
+- Admin authentication
+- Frontend-backend integration
 
 ## 📝 Environment Variables
 
@@ -124,9 +157,18 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ### Backend (.env)
 ```
 DATABASE_URL=sqlite:///./neural_space.db
-CORS_ORIGINS=http://localhost:3000
+ALLOWED_ORIGINS=http://localhost:3000
 DEBUG=True
+SECRET_KEY=your-secret-key-here
 ```
+
+## 🔐 Admin Access
+
+Default admin credentials (change after first login):
+- Username: `admin`
+- Password: `admin123`
+
+Access the admin panel at: http://localhost:3000/admin/login
 
 ## 🤝 Contributing
 

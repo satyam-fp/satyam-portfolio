@@ -76,3 +76,5 @@ venv/
 
 .kiro/
 .vscode/
+
+__tests__

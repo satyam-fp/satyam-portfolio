@@ -2,6 +2,13 @@
 
 import { Project, Blog, NeuralDataResponse } from '@/types/api';
 
+export interface StaticPage {
+  id: number;
+  page_key: string;
+  title: string;
+  content: Record<string, any>;
+}
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 class ApiError extends Error {
@@ -68,6 +75,11 @@ export async function getBlog(slug: string): Promise<Blog> {
 // Neural network data for 3D scene
 export async function getNeuralData(): Promise<NeuralDataResponse> {
   return fetchApi<NeuralDataResponse>('/api/neural-data');
+}
+
+// Static page API functions
+export async function getPage(key: string): Promise<StaticPage> {
+  return fetchApi<StaticPage>(`/api/pages/${key}`);
 }
 
 // Utility function to transform API data to 3D nodes

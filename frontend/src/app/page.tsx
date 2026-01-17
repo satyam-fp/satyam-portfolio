@@ -1,13 +1,36 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { NeuralScene } from '@/components/3d/NeuralScene';
 import { SceneLoading } from '@/components/3d/SceneLoading';
 import { Container, Section, Heading, Text, Card } from '@/components/ui';
 import { staggerContainer, staggerItem, fadeInUp, neuralPulse, neuralGlow } from '@/components/PageTransition';
+import { getPage, StaticPage } from '@/lib/api';
 
 export default function Home() {
+  const [pageData, setPageData] = useState<StaticPage | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPage('home')
+      .then(data => {
+        setPageData(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Failed to load home page content:', error);
+        setLoading(false);
+      });
+  }, []);
+
+  // Default content as fallback
+  const hero = pageData?.content?.hero || {
+    title: 'Neural Space',
+    tagline: 'Explore an interactive neural network representing my journey in Machine Learning and AI'
+  };
+
+  const sections = pageData?.content?.sections || [];
   return (
     <motion.div
       className="min-h-screen bg-background"
@@ -37,11 +60,11 @@ export default function Home() {
                 animate="animate"
               >
                 <Heading level={1} variant="neural" align="center" className="drop-shadow-lg">
-                  Neural Space
+                  {hero.title}
                 </Heading>
               </motion.div>
               <Text size="responsive" variant="muted" align="center" leading="relaxed" className="max-w-2xl mx-auto drop-shadow-md text-lg sm:text-xl md:text-2xl">
-                Explore an interactive neural network representing my journey in Machine Learning and AI
+                {hero.tagline}
               </Text>
               <motion.div
                 animate={{ opacity: [0.5, 1, 0.5] }}

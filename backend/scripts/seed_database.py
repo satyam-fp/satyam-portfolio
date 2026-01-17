@@ -99,16 +99,53 @@ def seed_static_pages(db):
             "page_key": "home",
             "title": "Home Page",
             "content": {
-                "hero_title": "Welcome to Neural Space",
-                "hero_subtitle": "Explore ML projects in 3D"
+                "hero": {
+                    "title": "Neural Space",
+                    "tagline": "Explore an interactive neural network representing my journey in Machine Learning and AI",
+                    "cta_text": "Explore Projects"
+                },
+                "sections": [
+                    {
+                        "type": "intro",
+                        "content": "I'm a German, a Machine Learning Engineer passionate about creating innovative solutions at the intersection of AI and interactive 3D experiences."
+                    }
+                ]
             }
         },
         {
             "page_key": "about",
             "title": "About Page",
             "content": {
-                "bio": "Machine Learning Engineer passionate about 3D visualization",
-                "skills": ["Python", "TensorFlow", "Three.js"]
+                "hero": {
+                    "title": "About Me",
+                    "subtitle": "Machine Learning Engineer specializing in AI for 3D applications with 3 years of development experience"
+                },
+                "bio": {
+                    "paragraphs": [
+                        "I'm a passionate Machine Learning Engineer with a focus on the intersection of AI and 3D graphics. Over the past 3 years, I've been developing cutting-edge solutions that bridge the gap between traditional computer graphics and modern deep learning techniques.",
+                        "My expertise spans from 3D computer vision and neural rendering to real-time graphics optimization. I enjoy tackling complex problems that require both theoretical understanding and practical implementation skills.",
+                        "When I'm not coding, you can find me exploring the latest research papers, contributing to open-source projects, or experimenting with new 3D visualization techniques."
+                    ]
+                },
+                "skills": {
+                    "Machine Learning": ["PyTorch", "TensorFlow", "Computer Vision", "Deep Learning", "Neural Networks"],
+                    "3D Graphics": ["Three.js", "WebGL", "OpenGL", "Point Clouds", "Neural Rendering"],
+                    "Development": ["Python", "JavaScript", "TypeScript", "React", "Next.js", "CUDA"]
+                },
+                "stats": [
+                    {"value": "3+", "label": "Years Experience", "sublabel": "ML Engineering"},
+                    {"value": "15+", "label": "Projects Completed", "sublabel": "AI & 3D Applications"},
+                    {"value": "5+", "label": "Research Papers", "sublabel": "Published & Cited"}
+                ],
+                "contact": {
+                    "title": "Let's Connect",
+                    "description": "Interested in collaborating on AI and 3D projects? Let's discuss how we can work together.",
+                    "links": [
+                        {"type": "github", "url": "https://github.com"},
+                        {"type": "linkedin", "url": "https://linkedin.com"},
+                        {"type": "email", "url": "mailto:contact@neuralspace.dev"}
+                    ]
+                }
             }
         }
     ]

@@ -2,6 +2,8 @@
 
 An interactive 3D portfolio website for a Machine Learning Engineer, featuring a neural network visualization built with Next.js, React Three Fiber, and FastAPI.
 
+> 📚 **New to the project?** Check out the [Documentation Index](DOCUMENTATION_INDEX.md) for a complete guide to all documentation.
+
 ## 🚀 Features
 
 - **Interactive 3D Neural Network**: Explore projects and blogs as nodes in a 3D space using React Three Fiber
@@ -103,6 +105,28 @@ venv/bin/python scripts/seed_database.py   # Seed sample data
 npm run dev          # Runs both frontend and backend concurrently
 ```
 
+## 📝 Content Management
+
+The portfolio includes a full-featured admin panel for managing all content dynamically.
+
+### Quick Start
+1. Create an admin user: `cd backend && venv/bin/python scripts/init_admin.py`
+2. Login at: `http://localhost:3000/admin/login`
+3. Edit content in the admin panel
+
+### What You Can Edit
+- **Projects**: Add, edit, delete ML projects with 3D positioning
+- **Blog Posts**: Manage blog content with markdown support
+- **Static Pages**: Edit home and about page content via JSON editor
+
+### Content Editing Guides
+- **Quick Guide**: See `QUICK_EDIT_GUIDE.md` for simple editing instructions
+- **Full Guide**: See `ADMIN_CONTENT_GUIDE.md` for complete documentation
+- **Implementation**: See `IMPLEMENTATION_SUMMARY.md` for technical details
+
+### How It Works
+Content edited in the admin panel is stored in the database and automatically fetched by frontend pages. Changes appear immediately after page refresh.
+
 ## 🌐 API Endpoints
 
 ### Public Endpoints
@@ -111,6 +135,7 @@ npm run dev          # Runs both frontend and backend concurrently
 - `GET /api/blogs` - List all published blogs
 - `GET /api/blogs/{slug}` - Get blog by slug
 - `GET /api/neural-data` - Combined data for 3D scene
+- `GET /api/pages/{key}` - Get static page content (home, about)
 
 ### Admin Endpoints (Authentication Required)
 - `POST /api/admin/login` - Admin login

@@ -1,6 +1,6 @@
 """API routers."""
 from fastapi import APIRouter
-from .routes import projects, blogs, neural_data, admin_auth, admin_projects, admin_blogs, admin_pages, admin_stats
+from .routes import projects, blogs, neural_data, pages, admin_auth, admin_projects, admin_blogs, admin_pages, admin_stats
 
 api_router = APIRouter()
 
@@ -8,6 +8,7 @@ api_router = APIRouter()
 api_router.include_router(projects.router, prefix="/projects", tags=["projects"])
 api_router.include_router(blogs.router, prefix="/blogs", tags=["blogs"])
 api_router.include_router(neural_data.router, prefix="/neural-data", tags=["neural-data"])
+api_router.include_router(pages.router, prefix="/pages", tags=["pages"])
 
 # Admin routes
 api_router.include_router(admin_auth.router, prefix="/admin", tags=["admin-auth"])
